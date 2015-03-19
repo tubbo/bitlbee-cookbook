@@ -8,37 +8,18 @@ client.
 
 - Ubuntu 14.10
 
-## Attributes
-
-<table>
-  <tr>
-    <th>Key</th>
-    <th>Type</th>
-    <th>Description</th>
-    <th>Default</th>
-  </tr>
-  <tr>
-    <td><tt>['bitlbee']['bacon']</tt></td>
-    <td>Boolean</td>
-    <td>whether to include bacon</td>
-    <td><tt>true</tt></td>
-  </tr>
-</table>
-
 ## Usage
 
-### bitlbee::default
+Install Bitlbee with our handy-dandy LWRP!
 
-Include `bitlbee` in your node's `run_list`:
-
-```json
-{
-  "run_list": [
-    "recipe[bitlbee::default]"
-  ]
-}
+```ruby
+bitlbee_install 'bitlbee' do
+  user 'bitlbee'
+  port 6667
+  protocols %w(yahoo jabber)
+end
 ```
 
 ## License and Authors
 
-Author:: YOUR_NAME (<YOUR_EMAIL>)
+Author: Tom Scott (<tubbo@psychedeli.ca>)
