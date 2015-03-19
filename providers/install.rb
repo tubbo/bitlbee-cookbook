@@ -5,6 +5,12 @@ action :install do
     nil
   end
 
+  if @new_resource.from_package
+    include_recipe 'bitlbee::package'
+  else
+    include_recipe 'bitlbee::source'
+  end
+
   template '/etc/init/bitlbee.conf' do
     source 'bitlbee.conf.erb'
     variables \
@@ -13,9 +19,8 @@ action :install do
       protocols: protocol_string
 
     notifies 'service[bitlbee]', :restart
+    action :create
   end
-
-  action :create
 end
 
 action :remove do

@@ -14,6 +14,7 @@ Install Bitlbee with our handy-dandy LWRP!
 
 ```ruby
 bitlbee_install 'bitlbee' do
+  from_package false
   user 'bitlbee'
   port 6667
   protocols %w(yahoo jabber)
