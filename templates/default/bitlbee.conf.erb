@@ -1,0 +1,5 @@
+RunMode = ForkDaemon
+User = <%= @user %>
+DaemonInterface = 0.0.0.0
+DaemonPort = <%= @port %>
+<%= "Protocols = #{@protocols}" unless @protocols.nil? %>
