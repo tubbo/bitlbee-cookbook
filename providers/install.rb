@@ -1,9 +1,10 @@
 action :install do
 
-  if @new_resource.from_package
+  case @new_resource.from
+  when :package
     package 'bitlbee'
-  else
-    source_location = File.join Chef::Config[:cache_path], 'bitlbee'
+  when :source
+    source_location = ::File.join Chef::Config[:file_cache_path], 'bitlbee'
 
     service 'bitlbee' do
       action :enable
@@ -22,6 +23,8 @@ action :install do
       cwd source_location
       notifies :restart, 'service[bitlbee]'
     end
+  else
+    raise ArgumentError, "'from' must be :package or :source"
   end
 
   protocol_string = if @new_resource.protocols.any?
