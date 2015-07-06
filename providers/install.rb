@@ -1,6 +1,6 @@
 action :install do
 
-  case @new_resource.from
+  case new_resource.from
   when :package
     package 'bitlbee'
   when :source
@@ -11,31 +11,31 @@ action :install do
     end
 
     git source_location do
-      repository @new_resource.repository
-      branch @new_resource.branch
+      repository new_resource.repository
+      branch new_resource.branch
     end
 
     execute 'apt-get build-dep -y bitlbee' do
-      only_if { @new_resource.install_dependencies }
+      only_if { new_resource.install_dependencies }
     end
 
     execute './configure && make && make install' do
       cwd source_location
-      notifies :restart, 'service[bitlbee]'
+      notifies 'service[bitlbee]', :restart
     end
   else
     raise ArgumentError, "'from' must be :package or :source"
   end
 
-  protocol_string = if @new_resource.protocols.any?
-    @new_resource.protocols.join("\s")
+  protocol_string = if new_resource.protocols.any?
+    new_resource.protocols.join("\s")
   end
 
   template '/etc/init/bitlbee.conf' do
     source 'bitlbee.conf.erb'
     variables(
-      user: @new_resource.user,
-      port: @new_resource.port,
+      user: new_resource.user,
+      port: new_resource.port,
       protocols: protocol_string
     )
 
