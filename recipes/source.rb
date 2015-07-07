@@ -26,7 +26,7 @@ end
 
 execute './configure && make && make install' do
   cwd source_location
-  notifies 'service[bitlbee]', :restart
+  notifies :restart, 'service[bitlbee]'
 end
 
 include_recipe 'bitlbee::default'

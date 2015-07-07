@@ -6,9 +6,7 @@ action :install do
   when :source
     source_location = ::File.join Chef::Config[:file_cache_path], 'bitlbee'
 
-    service 'bitlbee' do
-      action :enable
-    end
+    include_recipe 'git'
 
     git source_location do
       repository new_resource.repository
@@ -21,7 +19,6 @@ action :install do
 
     execute './configure && make && make install' do
       cwd source_location
-      notifies 'service[bitlbee]', :restart
     end
   else
     raise ArgumentError, "'from' must be :package or :source"
@@ -31,21 +28,38 @@ action :install do
     new_resource.protocols.join("\s")
   end
 
-  template '/etc/init/bitlbee.conf' do
+  directory '/etc/bitlbee'
+
+  template '/etc/bitlbee/bitlbee.conf' do
     source 'bitlbee.conf.erb'
+    cookbook 'bitlbee'
     variables(
       user: new_resource.user,
       port: new_resource.port,
       protocols: protocol_string
     )
-
-    notifies 'service[bitlbee]', :restart
     action :create
   end
+
+  template '/etc/init.d/bitlbee' do
+    source 'init.sh.erb'
+    cookbook 'bitlbee'
+    action :create
+  end
+
+  execute '/etc/init.d/bitlbee start'
 end
 
 action :remove do
-  file '/etc/init/bitlbee.conf' do
+  execute '/etc/init.d/bitlbee stop'
+
+  execute 'apt-get -y remove bitlbee'
+
+  file '/etc/bitlbee/bitlbee.conf' do
+    action :remove
+  end
+
+  directory '/etc/bitlbee' do
     action :remove
   end
 end
