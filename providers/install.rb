@@ -44,6 +44,7 @@ action :install do
   template '/etc/init.d/bitlbee' do
     source 'init.sh.erb'
     cookbook 'bitlbee'
+    mode 0744
     action :create
   end
 
